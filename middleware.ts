@@ -1,19 +1,10 @@
-// @ts-nocheck
-import { NextResponse } from "next/server"
-import { getToken } from "next-auth/jwt"
-import type { NextRequest } from "next/server"
+import { withAuth } from "next-auth/middleware"
 
-export async function middleware(request: NextRequest) {
-  const token = await getToken({ req: request })
-  
-  if (!token) {
-    const signInUrl = new URL("/auth/signin", request.url)
-    signInUrl.searchParams.set("callbackUrl", request.url)
-    return NextResponse.redirect(signInUrl)
-  }
-  
-  return NextResponse.next()
-}
+export default withAuth({
+  pages: {
+    signIn: "/auth/signin",
+  },
+})
 
 export const config = {
   matcher: ["/dashboard/:path*", "/profile/:path*", "/resume/:path*"],
